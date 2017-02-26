@@ -42,7 +42,7 @@ class App extends Component {
           </Col>
 
           <Col s={12} m={5}>
-            <Card title='Introduce un feed de Podcast' className='medium'>
+            <Card title='Introduce un feed de Podcast' className='large'>
               {/* URL feed field */}
               <Row>
                 <Input s={12} label="URL Podcast"
