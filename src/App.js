@@ -109,7 +109,7 @@ class App extends Component {
   }
 
   handleLoadFeed() {
-    this.setState({errors: []})
+    this.setState({audio: null, errors: []})
 
     if (!this.state.urlFeed) {
       const errors = ['Es necesaria la URL del podcast.']
