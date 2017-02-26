@@ -1,16 +1,27 @@
 import React, { Component } from 'react'
+import { Button, Icon } from 'react-materialize'
+import './styles.css'
 
 class Episode extends Component {
   render() {
     return (
       <div>
-        <h2>{this.props.title}</h2>
-        <figure>
+        <h2 className='Episode-title'>{this.props.title}</h2>
+        <p className='right-align'>
+          <Button waves='light' onClick={this.handlePlay.bind(this)}>Reproducir
+            <Icon right>play_circle_filled</Icon>
+          </Button>
+        </p>
+        <figure className='Episode-img right'>
           <img className="responsive-img" src={this.props.img} alt={this.props.title} />
         </figure>
         <div dangerouslySetInnerHTML={{__html: this.props.description}}></div>
       </div>
     )
+  }
+
+  handlePlay() {
+    this.props.onPlay(this.props.audio)
   }
 }
 

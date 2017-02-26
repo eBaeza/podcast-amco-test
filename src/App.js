@@ -1,12 +1,10 @@
 import React, { Component } from 'react'
 import axios from 'axios'
 import {
-  Row, Col,
-  Input,
-  Icon, Button,
-  Collection, CollectionItem,
-  Preloader
+  Row, Col, Input, Card, Icon, Button,
+  Collection, CollectionItem, Preloader
 } from 'react-materialize'
+import Player from 'react-audio-player'
 
 import Episode from './components/Episode'
 
@@ -16,36 +14,48 @@ class App extends Component {
     this.state = {
       urlFeed: 'http://www.sueldo30.com/feed/podcast/',
       episodes: [],
-      loadFeed: false
+      loadFeed: false,
+      audio: null
     }
 
     this.handleChange = this.handleChange.bind(this)
     this.handleLoadFeed = this.handleLoadFeed.bind(this)
+    this.handleAudio = this.handleAudio.bind(this)
   }
 
   render() {
     return (
-      <Row>
-        <Col s={12}><h1>SIMPLE PODCAST (AMCO TEST)</h1></Col>
+      <div className='container'>
+        <Row>
+          <Col s={12}><h1>SIMPLE PODCAST (AMCO TEST)</h1></Col>
 
-        <Col s={12} m={5}>
-          <Row>
-            <Input s={12} label="URL Podcast"
-              onChange={this.handleChange}
-              defaultValue={this.state.urlFeed}
-            >
-              <Icon>settings_input_antenna</Icon>
-            </Input>
-          </Row>
-          <Row>
-            <Button waves='light' onClick={this.handleLoadFeed}>Obtener episodios</Button>
-          </Row>
-        </Col>
+          <Col s={12} m={5}>
+            <Card title='Introduce un feed de Podcast' className='medium'>
+              <Row>
+                <Input s={12} label="URL Podcast"
+                  onChange={this.handleChange}
+                  defaultValue={this.state.urlFeed}
+                >
+                  <Icon>settings_input_antenna</Icon>
+                </Input>
+              </Row>
 
-        <Col s={12} m={7}>
-          { this.renderEpisodes() }
-        </Col>
-      </Row>
+              <Row className='right-align'>
+                <Button waves='light' onClick={this.handleLoadFeed}>Obtener episodios</Button>
+              </Row>
+
+              <Row>
+                <h6>Reproduciendo ahora</h6>
+                <Player src={this.state.audio} className='col s12' autoPlay/>
+              </Row>
+            </Card>
+          </Col>
+
+          <Col s={12} m={7}>
+            { this.renderEpisodes() }
+          </Col>
+        </Row>
+      </div>
     )
   }
 
@@ -55,8 +65,6 @@ class App extends Component {
         <div className='center-align'><Preloader flashing/></div>
       )
     } else {
-      if (!this.state.episodes.length) return
-
       return (
         <Collection header='Episodios'>
           {
@@ -65,9 +73,11 @@ class App extends Component {
                 <Episode
                   title={episode.title}
                   img={episode.image.href}
-                  description={episode.descriptionipion}
-                  ></Episode>
-                </CollectionItem>
+                  description={episode.description}
+                  audio={episode.enclosure.url}
+                  onPlay={this.handleAudio}
+                />
+              </CollectionItem>
               ))
             }
           </Collection>
@@ -93,6 +103,7 @@ class App extends Component {
       axios.get(url)
         .then(response => {
           const episodes = response.data.query.results.item
+          console.log(episodes)
           this.setState({ episodes, loadFeed: false })
         })
         .catch(error => {
@@ -100,6 +111,10 @@ class App extends Component {
           this.setState({ episodes: [], loadFeed: false })
         })
     }
+  }
+
+  handleAudio(audio) {
+    this.setState({ audio })
   }
 }
 
