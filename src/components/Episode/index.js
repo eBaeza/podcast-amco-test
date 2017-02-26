@@ -8,13 +8,20 @@ class Episode extends Component {
       <div>
         <h2 className='Episode-title'>{this.props.title}</h2>
         <p className='right-align'>
-          <Button waves='light' onClick={this.handlePlay.bind(this)}>Reproducir
-            <Icon right>play_circle_filled</Icon>
-          </Button>
+          { this.props.audio ? (
+              <Button waves='light' onClick={this.handlePlay.bind(this)}>Reproducir
+                <Icon right>play_circle_filled</Icon>
+              </Button>
+            ) : (
+              <span className="red-text">No se encontró ningún audio.</span>
+            )
+          }
         </p>
-        <figure className='Episode-img right'>
-          <img className="responsive-img" src={this.props.img} alt={this.props.title} />
-        </figure>
+        { this.props.image &&
+          <figure className='Episode-img right'>
+            <img className="responsive-img" src={this.props.img} alt={this.props.title} />
+          </figure>
+        }
         <div dangerouslySetInnerHTML={{__html: this.props.description}}></div>
       </div>
     )
