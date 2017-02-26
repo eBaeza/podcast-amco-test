@@ -28,7 +28,10 @@ class Episode extends Component {
   }
 
   handlePlay() {
-    this.props.onPlay(this.props.audio)
+    this.props.onPlay({
+      audio: this.props.audio || '',
+      title: this.props.title || ''
+    })
   }
 }
 

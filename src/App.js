@@ -1,12 +1,15 @@
 import React, { Component } from 'react'
 import axios from 'axios'
+import Player from 'react-audio-player'
+import {NotificationContainer, NotificationManager} from 'react-notifications'
 import {
   Row, Col, Input, Card, Icon, Button,
   Collection, CollectionItem, Preloader
 } from 'react-materialize'
-import Player from 'react-audio-player'
 
+// Styles
 import './App.css'
+import 'react-notifications/lib/notifications.css'
 
 import Episode from './components/Episode'
 
@@ -17,13 +20,15 @@ class App extends Component {
       urlFeed: 'http://www.sueldo30.com/feed/podcast/',
       episodes: [],
       loadFeed: false,
-      audio: null,
+      currentEpisode: {},
       errors: []
     }
 
     this.handleChange = this.handleChange.bind(this)
     this.handleLoadFeed = this.handleLoadFeed.bind(this)
-    this.handleAudio = this.handleAudio.bind(this)
+    this.handlePlay = this.handlePlay.bind(this)
+    this.onErrorPlayer = this.onErrorPlayer.bind(this)
+    this.onCanPlayPlayer = this.onCanPlayPlayer.bind(this)
   }
 
   render() {
@@ -59,10 +64,17 @@ class App extends Component {
               </Row>
 
               {/* Player */}
-              <Row>
-                <h6>Reproduciendo ahora</h6>
-                <Player src={this.state.audio} className='col s12' autoPlay/>
-              </Row>
+              { this.state.currentEpisode.audio &&
+                <Row>
+                  <h6>Reproduciendo ahora</h6>
+                  <Player
+                    src={this.state.currentEpisode.audio}
+                    onPlay={this.onCanPlayPlayer}
+                    onError={this.onErrorPlayer}
+                    className='col s12' autoPlay
+                  />
+                </Row>
+              }
             </Card>
           </Col>
 
@@ -71,6 +83,8 @@ class App extends Component {
             { this.renderEpisodes() }
           </Col>
         </Row>
+
+        <NotificationContainer></NotificationContainer>
       </div>
     )
   }
@@ -94,7 +108,7 @@ class App extends Component {
                   img={episode.image ? episode.image.href: ''}
                   description={episode.description}
                   audio={episode.enclosure? episode.enclosure.url: ''}
-                  onPlay={this.handleAudio}
+                  onPlay={this.handlePlay}
                 />
               </CollectionItem>
             ))
@@ -109,7 +123,7 @@ class App extends Component {
   }
 
   handleLoadFeed() {
-    this.setState({audio: null, errors: []})
+    this.setState({currentEpisode: {}, errors: []})
 
     if (!this.state.urlFeed) {
       const errors = ['Es necesaria la URL del podcast.']
@@ -138,8 +152,26 @@ class App extends Component {
     }
   }
 
-  handleAudio(audio) {
-    this.setState({ audio })
+  handlePlay(currentEpisode) {
+    this.setState({ currentEpisode })
+  }
+
+  onErrorPlayer() {
+    NotificationManager.error(
+      'Error al cargar el archivo de audio.',
+     `¡No se puede reproducir el podcast "${this.state.currentEpisode.title}"!`,
+     6000
+   )
+  }
+
+  onCanPlayPlayer() {
+    NotificationManager.success(
+      'Reproduciendo ahora...',
+      this.state.currentEpisode.title,
+      5000,
+      () => {},
+      true
+    )
   }
 }
 
