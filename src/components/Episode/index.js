@@ -17,7 +17,7 @@ class Episode extends Component {
             )
           }
         </p>
-        { this.props.image &&
+        { this.props.img &&
           <figure className='Episode-img right'>
             <img className="responsive-img" src={this.props.img} alt={this.props.title} />
           </figure>
