@@ -17,7 +17,7 @@ class App extends Component {
   constructor() {
     super()
     this.state = {
-      urlFeed: 'http://www.sueldo30.com/feed/podcast/',
+      urlFeed: '',
       episodes: [],
       loadFeed: false,
       currentEpisode: {},
@@ -66,13 +66,16 @@ class App extends Component {
               {/* Player */}
               { this.state.currentEpisode.audio &&
                 <Row>
-                  <h6>Reproduciendo ahora</h6>
-                  <Player
-                    src={this.state.currentEpisode.audio}
-                    onPlay={this.onCanPlayPlayer}
-                    onError={this.onErrorPlayer}
-                    className='col s12' autoPlay
-                  />
+                  <Col s={12}>
+                    <h6>Reproduciendo ahora...</h6>
+                    <h5>{this.state.currentEpisode.title}</h5>
+                    <Player
+                      src={this.state.currentEpisode.audio}
+                      onPlay={this.onCanPlayPlayer}
+                      onError={this.onErrorPlayer}
+                      className='col s12' autoPlay
+                    />
+                  </Col>
                 </Row>
               }
             </Card>
